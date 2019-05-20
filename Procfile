@@ -1,1 +1,1 @@
-web: flask translate compile; gunicorn books_manager:app
+web: python book_manager.py
