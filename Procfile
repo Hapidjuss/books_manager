@@ -1,1 +1,1 @@
-web: python book_manager.py
+web: gunicorn book_manager:app
