@@ -1,1 +1,1 @@
-web: gunicorn stx-books:app
+web: gunicorn books_manager:app
