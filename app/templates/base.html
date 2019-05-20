@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}"/>
+    <title>{{ title }}</title>
+</head>
+<body>
+    <ul id="menu">
+        <li>
+            <a href="/list">List of books</a>
+        </li>
+        <li>
+            <a href="/add_book">Add book</a>
+        </li>
+        <li>
+            <a href="/import_book">Import book</a>
+        </li>
+    </ul>
+    <hr>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>
+            {{ message }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <h2>{{ title }}</h2>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action="" method="POST" novalidate>
+            {{ import_form.hidden_tag() }}
+            <p>
+                {{ import_form.term.label }} <br>
+                {{ import_form.term(size=32) }} <br>
+                {% for error in import_form.term.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ import_form.submit() }}
+            </p>
+        </form>
+{% endblock %}

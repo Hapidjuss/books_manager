@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if books_exist %}
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td>
+                <form action="" method="POST" novalidate>
+                    {{ author_filter.hidden_tag() }}
+                    <p>
+                        {{ author_filter.author_name(size=16) }}
+                    </p>
+                </form>
+            </td>
+            <td>
+                <form action="" method="POST" novalidate>
+                    {{ category_filter.hidden_tag() }}
+                    <p>
+                        {{ category_filter.category_name(size=16) }}
+                    </p>
+                </form>
+            </td>
+            <td></td>
+        </tr>
+        {% for row in rows %}
+            <tr>
+                <td>{{row["title"]}}</td>
+                <td>
+                    {% for author in row["authors"] %}
+                        {% if loop.index != loop.length %}
+                            {{author["name"]}}, <br>
+                        {% else %}
+                            {{author["name"]}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for category in row["categories"] %}
+                        {% if loop.index != loop.length %}
+                            {{category["category_name"]}}, <br>
+                        {% else %}
+                            {{category["category_name"]}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{row["description"]}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Try to add some books first.</p>
+    {% endif %}
+{% endblock %}
