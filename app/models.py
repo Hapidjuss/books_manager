@@ -16,18 +16,18 @@ book_category_table = db.Table('books_categories',
 class Book(db.Model):
     __tablename__ = 'book'
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(200), nullable=False)
+    title = db.Column(db.String, nullable=False)
     authors = db.relationship('Author',
                 secondary=book_author_table)
     categories = db.relationship("Category",
                 secondary=book_category_table)
-    description = db.Column(db.String(2000), nullable=False)
+    description = db.Column(db.String, nullable=False)
 
 
 class Author(db.Model):
     __tablename__ = 'author'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False, unique=True)
+    name = db.Column(db.String, nullable=False, unique=True)
 
     def __init__(self, name):
         self.name = name
@@ -36,7 +36,7 @@ class Author(db.Model):
 class Category(db.Model):
     __tablename__ = 'category'
     id = db.Column(db.Integer, primary_key=True)
-    category_name = db.Column(db.String(100), nullable=False, unique=True)
+    category_name = db.Column(db.String, nullable=False, unique=True)
 
     def __init__(self, category_name):
         self.category_name = category_name
