@@ -35,3 +35,15 @@ table, td, th {
 td, th {
     padding: 10px;
 }
+
+.add_book_yes {
+    color: green;
+}
+
+.add_book_no {
+    color: red;
+}
+
+.no_category {
+    color: black;
+}

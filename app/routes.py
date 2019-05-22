@@ -2,6 +2,7 @@ from flask import render_template, flash, redirect
 from app import app, db
 from app.forms import AddBookForm, AuthorFilter, CategoryFilter, ImportBookForm
 from app.models import Book, Author, Category
+from app.helpers import BookHelper
 import requests
 
 
@@ -13,8 +14,9 @@ def show_books():
 
     # filter by author
     if author_filter.validate_on_submit() and author_filter.author_name.data:
-        flash('Author filter: "{}"'.format(author_filter.author_name.data))
-        rows = Book.query.filter(Book.authors.any(Author.name.like('%{}%'.format(author_filter.author_name.data)))).all()
+        flash('Author filter: "{}"'.format(author_filter.author_name.data), category='no_category')
+        rows = Book.query.filter(Book.authors.any(Author.name.like(
+                                                '%{}%'.format(author_filter.author_name.data)))).all()
         books_exist = True
         return render_template('list.html',
                                books_exist=books_exist,
@@ -25,8 +27,9 @@ def show_books():
 
     # filter by category
     if category_filter.validate_on_submit() and category_filter.category_name.data:
-        flash('Category filter: "{}"'.format(category_filter.category_name.data))
-        rows = Book.query.filter(Book.categories.any(Category.category_name.like('%{}%'.format(category_filter.category_name.data)))).all()
+        flash('Category filter: "{}"'.format(category_filter.category_name.data), category='no_category')
+        rows = Book.query.filter(Book.categories.any(Category.category_name.like(
+                                                '%{}%'.format(category_filter.category_name.data)))).all()
         books_exist = True
         return render_template('list.html',
                                books_exist=books_exist,
@@ -51,6 +54,7 @@ def show_books():
 
 @app.route('/add_book', methods=['GET', 'POST'])
 def add_book():
+    helper = BookHelper()
     form = AddBookForm()
     if form.validate_on_submit():
         book = Book()
@@ -59,25 +63,20 @@ def add_book():
 
         authors_list = form.authors.data.split(',')
         authors = map(str.strip, authors_list)
-        for author in authors:                          # is author in database already?...
-            new_author = Author.query.filter(Author.name == author).first()
-            if new_author is None:
-                new_author = Author(name=author)
-                db.session.add(new_author)              # ...add one if not
-            book.authors.append(new_author)
+        for author in helper.add_items(Author, 'name', db, authors):
+            book.authors.append(author)
 
         categories_list = form.categories.data.split(',')
         categories = map(str.strip, categories_list)
-        for category in categories:                     # is category in database already?...
-            new_category = Category.query.filter(Category.category_name == category).first()
-            if new_category is None:
-                new_category = Category(category_name=category)
-                db.session.add(new_category)            # ...add one if not
-            book.categories.append(new_category)
+        for category in helper.add_items(Category, 'category_name', db, categories):
+            book.categories.append(category)
 
-        db.session.add(book)
-        db.session.commit()
-        flash('New book "{}" was successfully added to database'.format(form.title.data))
+        if helper.test_dublicate(Book, book):
+            flash('Book "{}" is already in the database'.format(book.title), category='add_book_no')
+        else:
+            db.session.add(book)
+            db.session.commit()
+            flash('New book "{}" was successfully added to the database'.format(book.title), category='add_book_yes')
         return redirect('/list')
 
     # no validation or bad validation -> stay on site
@@ -86,6 +85,7 @@ def add_book():
 
 @app.route('/import_book', methods=['GET', 'POST'])
 def import_book():
+    helper = BookHelper()
     import_form = ImportBookForm()
     if import_form.validate_on_submit():
         url = "https://www.googleapis.com/books/v1/volumes?q=" + import_form.term.data
@@ -94,53 +94,39 @@ def import_book():
             info = item['volumeInfo']      # all book tags are in volumeInfo
             book = Book()
 
-            # there can be no title tag in data
+            # there can be no 'title' tag in data
             try:
-                book.title = info['title']
+                book.title = helper.add_item(info['title'])
             except KeyError:
-                book.title = '_unknown_'
+                book.title = helper.add_item()
 
-            # there can be no description tag in data
+            # there can be no 'description' tag in data
             try:
-                book.description = info['description']
+                book.description = helper.add_item(info['description'])
             except KeyError:
-                book.description = '_unknown_'
+                book.description = helper.add_item()
 
-            # there can be no authors tag in data
+            # there can be no 'authors' tag in data
             try:
-                for author in info['authors']:              # is author in database already?...
-                    new_author = Author.query.filter(Author.name == author).first()
-                    if new_author is None:
-                        new_author = Author(name=author)
-                        db.session.add(new_author)          # ...add one if not
-                    book.authors.append(new_author)
+                for author in helper.add_items(Author, 'name', db, info['authors']):
+                    book.authors.append(author)
             except KeyError:
-                author_name = '_unknown_'                   # --//--
-                new_author = Author.query.filter(Author.name == author_name).first()
-                if new_author is None:
-                    new_author = Author(name=author_name)
-                    db.session.add(new_author)              # --//--
-                book.authors.append(new_author)
+                book.authors.append(helper.add_items(Author, 'name', db))
 
-            # there can be no categories tag in data
+            # there can be no 'categories' tag in data
             try:
-                for category in info['categories']:         # is category in database already?...
-                    new_category = Category.query.filter(Category.category_name == category).first()
-                    if new_category is None:
-                        new_category = Category(category_name=category)
-                        db.session.add(new_category)        # ...add one if not
-                    book.categories.append(new_category)
+                for category in helper.add_items(Category, 'category_name', db, info['categories']):
+                    book.categories.append(category)
             except KeyError:
-                category_name = '_unknown_'                 # --//--
-                new_category = Category.query.filter(Category.category_name == category_name).first()
-                if new_category is None:
-                    new_category = Category(category_name=category_name)
-                    db.session.add(new_category)            # --//--
-                book.categories.append(new_category)
+                book.categories.append(helper.add_items(Category, 'category_name', db))
 
-            db.session.add(book)
-            db.session.commit()
-            flash('New book "{}" was successfully added to database'.format(info['title']))
+            # do not add if book is already in database
+            if helper.test_dublicate(Book, book):
+                flash('Book "{}" is already in the database'.format(book.title), category='add_book_no')
+            else:
+                db.session.add(book)
+                db.session.commit()
+                flash('New book "{}" was successfully added to the database'.format(book.title), category='add_book_yes')
         return redirect('/list')
 
     # no validation or bad validation -> stay on site
