@@ -1,6 +1,7 @@
 from app import db
 
 
+# database association tables for many to many relationship
 book_author_table = db.Table('books_authors',
                         db.Column('book_id', db.Integer, db.ForeignKey('book.id')),
                         db.Column('author_id', db.Integer, db.ForeignKey('author.id'))
@@ -13,6 +14,7 @@ book_category_table = db.Table('books_categories',
 )
 
 
+# database tables
 class Book(db.Model):
     __tablename__ = 'book'
     id = db.Column(db.Integer, primary_key=True)
