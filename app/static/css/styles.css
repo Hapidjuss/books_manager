@@ -47,3 +47,15 @@ td, th {
 .filter_on {
     color: blue;
 }
+
+.footer {
+    height: 60px;
+    line-height: 60px;
+    background-color: #f5f5f5;
+    color: #777;
+}
+
+.push {
+    height: 60px;
+}
+

@@ -39,6 +39,7 @@
 {% endblock %}
 
 {% block content %}
+{{ super() }}
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -54,5 +55,14 @@
 
         {% block app_content %}
         {% endblock %}
+
     </div>
+
+    <div class="push"></div>
+    {% block footer %}
+    <footer class="footer navbar-fixed-bottom">
+        <div class="container">&copy; 2019 Krzysztof Szewczyk</div>
+    </footer>
+    {% endblock %}
+
 {% endblock %}
