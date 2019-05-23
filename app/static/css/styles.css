@@ -44,6 +44,6 @@ td, th {
     color: red;
 }
 
-.no_category {
-    color: black;
+.filter_on {
+    color: blue;
 }

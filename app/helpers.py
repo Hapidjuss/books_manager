@@ -1,6 +1,18 @@
 class BookHelper:
     item_unknown: str = 'unknown'
 
+    @staticmethod
+    def test_duplicate(book_object, book):
+        books = book_object.query.filter(book_object.title == book.title).all()
+        if not books:
+            return False                # books need to have the same _title_ and _authors_ for duplicate True
+        for b in books:
+            for i in range(len(b.authors)):
+                if b.authors[i].name != book.authors[i].name:
+                    return False
+            return True
+        return True
+
     def add_item(self, tag=None):
         if tag is not None:
             return tag
@@ -24,20 +36,3 @@ class BookHelper:
                 new_item = table_object(self.item_unknown)
                 database.session.add(new_item)                  # --//--
             return new_item         # 'unknown'
-
-    def test_dublicate(self, book_object, book):
-        books = book_object.query.filter(book_object.title == book.title).all()
-        if not books:
-            return False
-        for b in books:
-            if b.description == book.description:
-                for i in range(len(b.authors)):
-                    if b.authors[i].name != book.authors[i].name:
-                        return False
-                for j in range(len(b.categories)):
-                    if b.categories[j].category_name != book.categories[j].category_name:
-                        return False
-                return True
-            else:
-                return False
-        return True

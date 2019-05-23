@@ -14,7 +14,7 @@ def show_books():
 
     # filter by author
     if author_filter.validate_on_submit() and author_filter.author_name.data:
-        flash('Author filter: "{}"'.format(author_filter.author_name.data), category='no_category')
+        flash('Author filter: "{}"'.format(author_filter.author_name.data), category='filter_on')
         rows = Book.query.filter(Book.authors.any(Author.name.like(
                                                 '%{}%'.format(author_filter.author_name.data)))).all()
         books_exist = True
@@ -27,7 +27,7 @@ def show_books():
 
     # filter by category
     if category_filter.validate_on_submit() and category_filter.category_name.data:
-        flash('Category filter: "{}"'.format(category_filter.category_name.data), category='no_category')
+        flash('Category filter: "{}"'.format(category_filter.category_name.data), category='filter_on')
         rows = Book.query.filter(Book.categories.any(Category.category_name.like(
                                                 '%{}%'.format(category_filter.category_name.data)))).all()
         books_exist = True
@@ -71,7 +71,8 @@ def add_book():
         for category in helper.add_items(Category, 'category_name', db, categories):
             book.categories.append(category)
 
-        if helper.test_dublicate(Book, book):
+        # do not add if book is already in database
+        if helper.test_duplicate(Book, book):
             flash('Book "{}" is already in the database'.format(book.title), category='add_book_no')
         else:
             db.session.add(book)
@@ -121,12 +122,13 @@ def import_book():
                 book.categories.append(helper.add_items(Category, 'category_name', db))
 
             # do not add if book is already in database
-            if helper.test_dublicate(Book, book):
+            if helper.test_duplicate(Book, book):
                 flash('Book "{}" is already in the database'.format(book.title), category='add_book_no')
             else:
                 db.session.add(book)
                 db.session.commit()
-                flash('New book "{}" was successfully added to the database'.format(book.title), category='add_book_yes')
+                flash('New book "{}" was successfully added to the database'.format(book.title),
+                      category='add_book_yes')
         return redirect('/list')
 
     # no validation or bad validation -> stay on site
