@@ -4,29 +4,27 @@ class BookHelper:
     @staticmethod
     def test_duplicate(book_object, book):
         books = book_object.query.filter(book_object.title == book.title).all()
-
         if not books:               # empty database
             return False
-
         for b in books:             # books need to have the same _title_ and _authors_ for return value True
             if len(b.authors) == len(book.authors):
-                for i in book.authors:
-                    test = False
-                    for j in b.authors:                # authors in different order check
-                        if i.name == j.name:
-                            test = True
-                            continue
+                test = False
+                for a in book.authors:              # check if authors are in different order but the same
+                    test = any(author.name == a.name for author in b.authors)
                     if not test:
                         break
-                return True
+                if test:
+                    return True
         return False
 
+    # helper for title and description tag
     def add_item(self, tag=None):
         if tag is not None:
             return tag
         else:
             return self.item_unknown
 
+    # helper for authors and categories tag
     def add_items(self, table_object, attribute, database, tag_list=None):
         if tag_list is not None:
             item_list = []
