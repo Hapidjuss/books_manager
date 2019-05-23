@@ -1,36 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% import 'bootstrap/fixes.html' as fixes %}
+
+{% block head %}
+    {{ super() }}
+    {{ fixes.ie8() }}
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}"/>
-    <title>{{ title }}</title>
-</head>
-<body>
-    <ul id="menu">
-        <li>
-            <a href="/list">List of books</a>
-        </li>
-        <li>
-            <a href="/add_book">Add book</a>
-        </li>
-        <li>
-            <a href="/import_book">Import book</a>
-        </li>
-    </ul>
-    <hr>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    <ul>
-        {% for category, message in messages %}
-        <li>
-            <div class="{{ category }}">{{ message }}</div>
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-    <h2>{{ title }}</h2>
-    {% block content %}
-    {% endblock %}
-</body>
-</html>
+{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/list">Books Manager</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="/add_book">Add book</a></li>
+                    <li><a href="/import_book">Import book</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="alert alert-info" role="alert">
+            {% for category, message in messages %}
+            <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <h3>{{ title }}</h3>
+
+        {% block app_content %}
+        {% endblock %}
+    </div>
+{% endblock %}

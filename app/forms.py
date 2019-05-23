@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired
 # used in add_book.html
 class AddBookForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    authors = StringField('Author (example: author1, author2, author3))', validators=[DataRequired()])
+    authors = StringField('Author (example: auth1, auth2, auth3)', validators=[DataRequired()])
     categories = StringField('Category (example: cat1, cat2, cat3)', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
     submit = SubmitField('Add Book')
