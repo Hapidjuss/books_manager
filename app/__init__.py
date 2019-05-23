@@ -8,7 +8,10 @@ app = Flask(__name__)                    # it can use heroku database or databas
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///books_db.sqlite3'
 app.config['SECRET_KEY'] = 'secret_stx_next_app'
 db = SQLAlchemy(app)
-bootstrap = Bootstrap(app)
+
+
+bootstrap = Bootstrap()
+bootstrap.init_app(app)
 
 from app.models import Book, Author, Category
 

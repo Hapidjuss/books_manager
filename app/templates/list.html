@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
     {% if books_exist %}
@@ -15,20 +16,18 @@
         <tr>
             <td></td>
             <td>
-                <form action="" method="POST" novalidate>
-                    {{ author_filter.hidden_tag() }}
-                    <p>
-                        {{ author_filter.author_name(size=16) }}
-                    </p>
-                </form>
+                <div class="row">
+                    <div class="col-md-12">
+                        {{ wtf.quick_form(author_filter) }}
+                    </div>
+                </div>
             </td>
             <td>
-                <form action="" method="POST" novalidate>
-                    {{ category_filter.hidden_tag() }}
-                    <p>
-                        {{ category_filter.category_name(size=16) }}
-                    </p>
-                </form>
+                <div class="row">
+                    <div class="col-md-12">
+                        {{ wtf.quick_form(category_filter) }}
+                    </div>
+                </div>
             </td>
             <td></td>
         </tr>
