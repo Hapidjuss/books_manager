@@ -18,14 +18,14 @@
             <td>
                 <div class="row">
                     <div class="col-md-12">
-                        {{ wtf.quick_form(author_filter) }}
+                        <input type="text" id="AuthorFilter" onkeyup="SearchTableBy()" placeholder="Filter" autofocus>
                     </div>
                 </div>
             </td>
             <td>
                 <div class="row">
                     <div class="col-md-12">
-                        {{ wtf.quick_form(category_filter) }}
+                        <input type="text" id="CategoryFilter" onkeyup="SearchTableBy()" placeholder="Filter" autofocus>
                     </div>
                 </div>
             </td>

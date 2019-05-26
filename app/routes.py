@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect
 from app import app, db
-from app.forms import AddBookForm, AuthorFilter, CategoryFilter, ImportBookForm
+from app.forms import AddBookForm, ImportBookForm
 from app.models import Book, Author, Category
 from app.helpers import BookHelper
 import requests
@@ -9,34 +9,6 @@ import requests
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/list', methods=['GET', 'POST'])
 def show_books():
-    author_filter = AuthorFilter()
-    category_filter = CategoryFilter()
-
-    # filter by author
-    if author_filter.validate_on_submit() and author_filter.author_name.data:
-        flash('Author filter: "{}"'.format(author_filter.author_name.data), category='filter_on')
-        rows = Book.query.filter(Book.authors.any(Author.name.like(
-                                                '%{}%'.format(author_filter.author_name.data)))).all()
-        books_exist = True
-        return render_template('list.html',
-                               books_exist=books_exist,
-                               rows=rows,
-                               title="List of books",
-                               author_filter=author_filter,
-                               category_filter=category_filter)
-
-    # filter by category
-    if category_filter.validate_on_submit() and category_filter.category_name.data:
-        flash('Category filter: "{}"'.format(category_filter.category_name.data), category='filter_on')
-        rows = Book.query.filter(Book.categories.any(Category.category_name.like(
-                                                '%{}%'.format(category_filter.category_name.data)))).all()
-        books_exist = True
-        return render_template('list.html',
-                               books_exist=books_exist,
-                               rows=rows,
-                               title="List of books",
-                               author_filter=author_filter,
-                               category_filter=category_filter)
 
     # table without filters
     rows = Book.query.all()
@@ -47,9 +19,7 @@ def show_books():
     return render_template('list.html',
                            books_exist=books_exist,
                            rows=rows,
-                           title="List of books",
-                           author_filter=author_filter,
-                           category_filter=category_filter)
+                           title="List of books")
 
 
 @app.route('/add_book', methods=['GET', 'POST'])

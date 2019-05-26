@@ -13,15 +13,6 @@ class AddBookForm(FlaskForm):
     submit = SubmitField('Add Book')
 
 
-# used in list.html
-class AuthorFilter(FlaskForm):
-    author_name = StringField('', render_kw={'placeholder': 'Filter'})
-
-
-class CategoryFilter(FlaskForm):
-    category_name = StringField('', render_kw={'placeholder': 'Filter'})
-
-
 # used in import_book.html
 class ImportBookForm(FlaskForm):
     term = StringField('Search term', validators=[DataRequired()], render_kw={'placeholder': 'Term'})
