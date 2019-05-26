@@ -59,3 +59,12 @@ td, th {
     height: 60px;
 }
 
+.btn_inside {
+    margin-left: -60px;
+    float: left;
+}
+
+.with_button {
+    padding-right: 60px;
+    float: left;
+}

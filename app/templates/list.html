@@ -17,15 +17,17 @@
             <td></td>
             <td>
                 <div class="row">
-                    <div class="col-md-12">
-                        <input type="text" id="AuthorFilter" onkeyup="SearchTableBy()" placeholder="Filter" autofocus>
+                    <div class="col-md-8">
+                        <input class="with_button" type="text" id="AuthorFilter" onkeyup="filterTable()" placeholder="Filter" autofocus>
+                        <button class="btn btn-default btn_inside" onclick="clearFilter(this)">Clear</button>
                     </div>
                 </div>
             </td>
             <td>
                 <div class="row">
-                    <div class="col-md-12">
-                        <input type="text" id="CategoryFilter" onkeyup="SearchTableBy()" placeholder="Filter" autofocus>
+                    <div class="col-md-8">
+                        <input class="with_button" type="text" id="CategoryFilter" onkeyup="filterTable()" placeholder="Filter" autofocus>
+                        <button class="btn btn-default btn_inside" onclick="clearFilter(this)">Clear</button>
                     </div>
                 </div>
             </td>
@@ -60,4 +62,12 @@
     {% else %}
     <p>Try to add some books first.</p>
     {% endif %}
+
+{% block scripts %}
+    <script>
+        window.onload = filterTable();
+    </script>
+    {{ super() }}
+{% endblock %}
+
 {% endblock %}

@@ -1,4 +1,4 @@
-function SearchTableBy() {
+function filterTable() {
     var authorInput, categoryInput;
     var authorFilter, categoryFilter;
     var table, tr, td, x;
@@ -26,4 +26,12 @@ function SearchTableBy() {
             }
         }
     }
+}
+
+function clearFilter(node) {
+    var input;
+    input = node.parentNode.childNodes[1];
+    input.value = "";
+    input.focus();
+    filterTable();
 }
