@@ -68,3 +68,15 @@ td, th {
     padding-right: 60px;
     float: left;
 }
+
+.active_row {
+    display: "";
+}
+
+.nonactive_row {
+    display: none;
+}
+
+.active_row:hover {
+    background: #f5f5f5;
+}

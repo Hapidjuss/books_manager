@@ -3,7 +3,7 @@
 
 {% block app_content %}
     {% if books_exist %}
-    <table class="table-bordered table-striped">
+    <table class="table-bordered">
         <thead>
             <tr>
                 <th>Title</th>
@@ -34,7 +34,30 @@
             <td></td>
         </tr>
         {% for row in rows %}
-            <tr>
+            <tr class="short_text_row active_row" onclick="showHideFullText(this)">
+                <td>{{row["title"]}}</td>
+                <td>
+                    {% for author in row["authors"] %}
+                        {% if loop.index != loop.length %}
+                            {{author["name"]}}, <br>
+                        {% else %}
+                            {{author["name"]}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for category in row["categories"] %}
+                        {% if loop.index != loop.length %}
+                            {{category["category_name"]}}, <br>
+                        {% else %}
+                            {{category["category_name"]}}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{row["description"]}}</td>
+            </tr>
+
+            <tr class="full_text_row nonactive_row" onclick="showHideFullText(this)">
                 <td>{{row["title"]}}</td>
                 <td>
                     {% for author in row["authors"] %}
@@ -65,6 +88,7 @@
 
 {% block scripts %}
     <script>
+        window.onload = doShortText();
         window.onload = filterTable();
     </script>
     {{ super() }}
